@@ -16,6 +16,7 @@ package by.it.group451004.volynets.lesson02;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Scanner;
+import java.util.Arrays;
 
 public class C_GreedyKnapsack {
     public static void main(String[] args) throws FileNotFoundException {
@@ -40,16 +41,27 @@ public class C_GreedyKnapsack {
         }
         System.out.printf("Всего предметов: %d. Рюкзак вмещает %d кг.\n", n, W);
 
-        //тут необходимо реализовать решение задачи
-        //итогом является максимально воможная стоимость вещей в рюкзаке
-        //вещи можно резать на кусочки (непрерывный рюкзак)
+        Arrays.sort(items);
+
         double result = 0;
-        //тут реализуйте алгоритм сбора рюкзака
-        //будет особенно хорошо, если с собственной сортировкой
-        //кроме того, можете описать свой компаратор в классе Item
+        double remainingWeight = W;
 
-        //ваше решение.
+        // Идем по отсортированным предметам
+        for (Item item : items) {
+            if (remainingWeight == 0) {
+                break;
+            }
 
+            if (item.weight <= remainingWeight) {
+                // Если предмет полностью помещается в рюкзак
+                result += item.cost;
+                remainingWeight -= item.weight;
+            } else {
+                // Если предмет частично помещается в рюкзак
+                result += item.cost * (remainingWeight / (double) item.weight);
+                remainingWeight = 0; // Рюкзак заполнен
+            }
+        }
 
         System.out.printf("Удалось собрать рюкзак на сумму %f\n", result);
         return result;
@@ -67,17 +79,17 @@ public class C_GreedyKnapsack {
         @Override
         public String toString() {
             return "Item{" +
-                   "cost=" + cost +
-                   ", weight=" + weight +
-                   '}';
+                    "cost=" + cost +
+                    ", weight=" + weight +
+                    '}';
         }
 
         @Override
         public int compareTo(Item o) {
-            //тут может быть ваш компаратор
-
-
-            return 0;
+            // Сортируем по соотношению стоимости к весу (cost / weight)
+            double ratio1 = (double) this.cost / this.weight;
+            double ratio2 = (double) o.cost / o.weight;
+            return Double.compare(ratio2, ratio1); // От большего к меньшему
         }
     }
 }
